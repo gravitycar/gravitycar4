@@ -3,6 +3,7 @@
 namespace Gravitycar\src\Fields;
 
 use Gravitycar\exceptions\GCException;
+use Gravitycar\Gravitons\Graviton;
 use Gravitycar\src\Validation\ValidationRuleBase;
 use Gravitycar\lib\DBConnector;
 use Gravitycar\src\Validation\ValidationRuleFactory;
@@ -22,7 +23,7 @@ abstract class FieldBase
     protected bool $required;
     protected array $validationFailures = [];
     protected mixed $originalValue; // Added missing property
-    protected string $graviton;
+    protected Graviton $graviton;
     protected string $table;
     protected bool $nullable = true;
     protected bool $autoincrement = false;
@@ -30,9 +31,11 @@ abstract class FieldBase
 
     protected ValidationRuleFactory $validationRuleFactory;
 
-    public function __construct()
+    public function __construct(Graviton $graviton)
     {
         $this->validationRuleFactory = new ValidationRuleFactory();
+        $this->graviton = $graviton;
+        $this->table = $graviton->getTable();
     }
 
 
@@ -123,13 +126,6 @@ abstract class FieldBase
         }
 
         return null;
-    }
-
-
-    public function collectRecordTypeData(string $recordType, string $table): void
-    {
-        $this->graviton = $recordType;
-        $this->table = $table;
     }
 
     public function get(): mixed

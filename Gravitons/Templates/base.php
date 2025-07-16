@@ -47,7 +47,6 @@ $fieldsList = [
         'relatedRecordType' => 'Users',
         'displayField' => 'created_by_name',
         'validationRules' => [
-            'Required',
             'Id'
         ],
     ],
@@ -69,7 +68,6 @@ $fieldsList = [
         'relatedRecordType' => 'Users',
         'displayField' => 'created_by_name',
         'validationRules' => [
-            'Required',
             'Id'
         ],
     ],

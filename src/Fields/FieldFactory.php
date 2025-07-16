@@ -3,6 +3,7 @@
 namespace Gravitycar\src\Fields;
 
 use Gravitycar\exceptions\GCException;
+use Gravitycar\Gravitons\Graviton;
 
 class FieldFactory
 {
@@ -43,11 +44,11 @@ class FieldFactory
     /**
      * @throws GCException
      */
-    public function ingestFieldsDefinitionFiles(array $filePaths): array
+    public function ingestFieldsDefinitionFiles(array $filePaths, Graviton $graviton): array
     {
         $fields = [];
         foreach ($filePaths as $filePath) {
-            $fileFields = $this->ingestFieldsDefinitionFile($filePath);
+            $fileFields = $this->ingestFieldsDefinitionFile($filePath, $graviton);
             $fields = array_merge($fields, $fileFields);
         }
         return $fields;
@@ -56,22 +57,22 @@ class FieldFactory
     /**
      * @throws GCException
      */
-    public function ingestFieldsDefinitionFile(string $filePath): array
+    public function ingestFieldsDefinitionFile(string $filePath, Graviton $graviton): array
     {
         $fieldsList = $this->getFieldsDefinitionsFromFile($filePath);
 
-        return array_map(function ($defs) {
-            return $this->createFieldFromDefs($defs);
+        return array_map(function ($defs) use ($graviton) {
+            return $this->createFieldFromDefs($defs, $graviton);
         }, $fieldsList);
     }
 
     /**
      * @throws GCException
      */
-    public function createFieldFromDefs(array $defs): FieldBase
+    public function createFieldFromDefs(array $defs, Graviton $graviton): FieldBase
     {
         $className = $this->createFieldClassNameFromDefs($defs);
-        $field = new $className();
+        $field = new $className($graviton);
         $field->ingestFieldDefinitions($defs);
         return $field;
     }

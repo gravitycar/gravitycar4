@@ -21,7 +21,8 @@ class EnumField extends FieldBase
     {
         if ($this->optionsClass && $this->optionsMethod) {
             if (class_exists($this->optionsClass) && method_exists($this->optionsClass, $this->optionsMethod)) {
-                $options =  call_user_func([$this->optionsClass, $this->optionsMethod]);
+                $optionsClass = new $this->optionsClass();
+                $options =  call_user_func([$optionsClass, $this->optionsMethod]);
                 if (is_array($options)) {
                     return $options;
                 } else {

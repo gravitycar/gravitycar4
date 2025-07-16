@@ -20,7 +20,7 @@ class Users extends Graviton
 
     public function getUserTypes(): array
     {
-        return ['admin', 'regular'];
+        return ['admin' => 'Administrator', 'regular' => 'Regular User'];
     }
 
     public function getName(): string

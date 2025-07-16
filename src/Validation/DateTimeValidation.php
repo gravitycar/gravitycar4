@@ -16,12 +16,12 @@ class DateTimeValidation extends ValidationRuleBase
             return true;
         }
 
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $testTestValue)) {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $testTestValue)) {
             return false;
         }
 
-        $date = \DateTime::createFromFormat('Y-m-d\TH:i:s', $testTestValue);
-        return $date && $date->format('Y-m-d\TH:i:s') === $testTestValue;
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $testTestValue);
+        return $date && $date->format('Y-m-d H:i:s') === $testTestValue;
     }
 
     public function getFormattedErrorMessage(FieldBase $field): string
@@ -35,6 +35,6 @@ class DateTimeValidation extends ValidationRuleBase
 
     public function getJavascriptValidation(): string
     {
-        return "function(value) { if (!value) return true; var regex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/; if (!regex.test(value)) return false; var date = new Date(value); return date instanceof Date && !isNaN(date); }";
+        return "function(value) { if (!value) return true; var regex = /^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$/; if (!regex.test(value)) return false; var date = new Date(value); return date instanceof Date && !isNaN(date); }";
     }
 }

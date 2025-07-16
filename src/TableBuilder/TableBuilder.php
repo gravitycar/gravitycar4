@@ -276,7 +276,7 @@ class TableBuilder
         $comparator = $schemaManager->createComparator();
         $schemaDiff = $comparator->compareSchemas($fromSchema, $targetSchema);
 
-        // Generate ALTER TABLE queries
+        // Generate and execute ALTER TABLE queries
         foreach ($schemaDiff->toSql($platform) as $query) {
             $this->db->executeStatement($query);
         }

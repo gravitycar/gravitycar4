@@ -28,7 +28,7 @@ $fieldsList = [
         'name' => 'user_type',
         'type' => 'Enum',
         'defaultValue' => 'regular',
-        'optionsClass' => 'Users',
+        'optionsClass' => '\Gravitycar\Gravitons\Users\Users',
         'optionsMethod' => 'getUserTypes',
         'validationRules' => [
                 'Options',

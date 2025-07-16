@@ -110,7 +110,9 @@ class Graviton
 
         $filePaths = $this->getTemplatesFilePaths();
         $filePaths[] = $this->getFieldsFilePath();
-        return $filePaths;
+        return array_filter($filePaths, function($value) {
+            return $value !== null && $value !== '';
+        });
     }
 
 
@@ -119,7 +121,7 @@ class Graviton
      */
     public function ingestFields(): void
     {
-        $this->fields = $this->fieldFactory->ingestFieldsDefinitionFiles($this->getFieldFilesPaths());
+        $this->fields = $this->fieldFactory->ingestFieldsDefinitionFiles($this->getFieldFilesPaths(), $this);
     }
 
 
@@ -383,6 +385,6 @@ class Graviton
 
     public function getCurrentDateTime(): string
     {
-        return date('Y-m-d') . 'T' . date('H:i:s');
+        return date('Y-m-d H:i:s');
     }
 }
