@@ -13,6 +13,11 @@ class Users extends Graviton
     protected string $labelSingular = 'User';
     protected array $templates = ['base', 'person'];
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function isAdmin(): bool
     {
         return $this->is_admin;
@@ -31,5 +36,17 @@ class Users extends Graviton
     public function setAdmin(): void
     {
         $this->is_admin = ($this->get('user_type') == 'admin');
+    }
+
+
+    public function hashPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+
+    public function setLastLogin(): void
+    {
+        $this->set('last_login', $this->getCurrentDateTime());
     }
 }

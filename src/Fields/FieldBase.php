@@ -28,6 +28,7 @@ abstract class FieldBase
     protected bool $nullable = true;
     protected bool $autoincrement = false;
     protected string $label = '';
+    protected bool $readOnly = false;
 
     protected ValidationRuleFactory $validationRuleFactory;
 
@@ -112,6 +113,12 @@ abstract class FieldBase
     public function getAutoincrement(): bool
     {
         return $this->autoincrement;
+    }
+
+
+    public function isReadOnly(): bool
+    {
+        return $this->readOnly;
     }
 
 

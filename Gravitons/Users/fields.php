@@ -34,6 +34,29 @@ $fieldsList = [
                 'Options',
         ],
     ],
+
+    'email' => [
+        'name' => 'email',
+        'label' => 'Email',
+        'type' => 'Email',
+        'required' => false,
+        'maxLength' => 100,
+        'validationRules' => [
+            'Email',
+        ],
+    ],
+
+    'last_login' => [
+        'name' => 'last_login',
+        'label' => 'Last Login',
+        'type' => 'DateTime',
+        'required' => false,
+        'readOnly' => true,
+        'validationRules' => [
+            'DateTime',
+        ],
+    ],
+
 ];
 
 $indicesList = [

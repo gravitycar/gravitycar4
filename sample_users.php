@@ -5,8 +5,31 @@ use Gravitycar\src\GCFoundation;
 use Gravitycar\Gravitons\Users\Users as Users;
 $app = GCFoundation::getInstance();
 
+/*
+$currentUser = new Users();
+$currentUser->retrieve('178b6e9e-bec4-4b32-8230-c68bf91f89d0');
+
+$app->setCurrentUser($currentUser);
+*/
+
+$tb = new \Gravitycar\src\TableBuilder\TableBuilder($app, $app->getDB());
+$tb->buildOrSyncAllGravitonTables();
+
 // Get Users field definitions
 //$user = new \Gravitycar\Gravitons\Users\Users();
+
+// create me
+$me = new Users();
+$me->set('first_name', 'Mike');
+$me->set('last_name', 'Andersen');
+$me->set('username', 'mike@gravitycar.com');
+$me->set('password', 'bageldog');
+$me->set('email', 'mike@gravitycar.com');
+
+$app->setCurrentUser($me);
+
+$me->save();
+
 $user = new Users();
 $fields = $user->getFields();
 

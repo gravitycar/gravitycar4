@@ -2,6 +2,8 @@
 
 namespace Gravitycar\src;
 
+use Gravitycar\exceptions\GCException;
+use Gravitycar\Gravitons\Users\Users;
 use Gravitycar\lib\DBConnector;
 use Gravitycar\lib\Config;
 use Monolog\Handler\StreamHandler;
@@ -18,6 +20,8 @@ class GCFoundation
     private Logger $logger;
     private string $environment;
 
+    private Users $currentUser;
+
     private function __construct()
     {
         $this->config = new Config();
@@ -26,6 +30,26 @@ class GCFoundation
 
         $this->logger = new Logger('gravitycar');
         $this->logger->pushHandler(new StreamHandler('gravitycar.log', Level::Debug));
+    }
+
+
+    public function currentUserIsSet(): bool
+    {
+        return isset($this->currentUser) && $this->currentUser instanceof Users && !empty($this->currentUser->get('id'));
+    }
+
+    public function getCurrentUser(): Users
+    {
+        if (isset($this->currentUser)) {
+            return $this->currentUser;
+        }
+        throw new GCException("Current user is not set", 401);
+    }
+
+
+    public function setCurrentUser(Users $user): void
+    {
+        $this->currentUser = $user;
     }
 
     public static function getInstance(): GCFoundation

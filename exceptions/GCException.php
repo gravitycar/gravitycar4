@@ -35,7 +35,7 @@ class GCException extends Exception implements Throwable
     {
         try {
             if (!empty($this->convertedFrom)) {
-                $trace = $this->getPrevious()->getTraceAsString();
+                $trace = $this->getTraceAsString() . " PREVIOUS EXCEPTION: " . $this->getPrevious()->getTraceAsString();
             } else {
                 $trace = $this->getTraceAsString();
             }

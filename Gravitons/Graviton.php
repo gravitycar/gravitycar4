@@ -30,11 +30,15 @@ class Graviton
 
     protected array $validationFailures = [];
 
+    /**
+     * @throws GCException
+     */
     public function __construct()
     {
         $this->app = GCFoundation::getInstance();
         $this->db = $this->app->getDB();
         $this->fieldFactory = new FieldFactory();
+        $this->getFields();
     }
 
 
@@ -61,6 +65,9 @@ class Graviton
         return $this->type;
     }
 
+    /**
+     * @throws GCException
+     */
     public function idExists(): bool
     {
         if (isset($this->recordExistsInDB)) {
@@ -68,7 +75,11 @@ class Graviton
         }
 
         $query = "SELECT id FROM {$this->table} WHERE id = ?";
-        $result = $this->db->fetchOne($query, [$this->id]);
+        try {
+            $result = $this->db->fetchOne($query, [$this->get('id')]);
+        } catch (\Exception $e) {
+            throw GCException::convert($e);
+        }
 
         if ($result && count($result) > 0) {
             $this->recordExistsInDB = true;
@@ -79,6 +90,9 @@ class Graviton
         return false;
     }
 
+    /**
+     * @throws GCException
+     */
     public function getFieldsFilePath(): string
     {
         $fieldsFilePath =  "Gravitons/{$this->type}/fields.php";
@@ -88,6 +102,9 @@ class Graviton
         return $fieldsFilePath;
     }
 
+    /**
+     * @throws GCException
+     */
     public function getTemplatesFilePaths(): array
     {
         $filePaths = [];
@@ -154,6 +171,9 @@ class Graviton
     }
 
 
+    /**
+     * @throws GCException
+     */
     public function set(string $name, mixed $value): void
     {
         if (isset($this->fields[$name])) {
@@ -300,6 +320,8 @@ class Graviton
 
         $this->getField('date_created')->set($this->getCurrentDateTime());
         $this->getField('date_updated')->set($this->getCurrentDateTime());
+        $this->setUserIDFieldToCurrentUser('created_by_id');
+        $this->setUserIDFieldToCurrentUser('updated_by_id');
 
         foreach ($fields as $fieldName => $field) {
             if ($field->getIsDBField()) {
@@ -320,6 +342,24 @@ class Graviton
         $this->recordExistsInDB = true;
 
         return $guid;
+    }
+
+
+    /**
+     * @throws GCException
+     */
+    public function setUserIDFieldToCurrentUser(string $fieldName = ''): void
+    {
+        if ($this->app->currentUserIsSet()) {
+            $userId = $this->app->getCurrentUser()->get('id');
+            if ($this->getField($fieldName)) {
+                $this->set($fieldName, $userId);
+            } else {
+                throw new GCException("Field '$fieldName' does not exist in graviton of type '{$this->type}'");
+            }
+        } else {
+            throw new GCException("No current user is set in the application context");
+        }
     }
 
     /**
@@ -345,6 +385,7 @@ class Graviton
         $queryBuilder->update($this->table);
 
         $this->getField('date_updated')->set($this->getCurrentDateTime());
+        $this->setUserIDFieldToCurrentUser('updated_by_id');
 
         foreach ($fields as $fieldName => $field) {
             if ($field->getIsDBField() && $fieldName !== 'id') {
